@@ -1,0 +1,38 @@
+name: Build My Progress APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'MyProgressAndroid.zip'
+      - '.github/workflows/android.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Extract project
+        run: |
+          mkdir appsrc
+          unzip MyProgressAndroid.zip -d appsrc
+
+      - name: Build APK
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: '8.9'
+          arguments: -p appsrc assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MyProgress-APK
+          path: appsrc/app/build/outputs/apk/debug/*.apk
