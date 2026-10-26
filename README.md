@@ -1,0 +1,2 @@
+# Tekad
+Semangat gw
